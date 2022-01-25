@@ -1,6 +1,6 @@
 {
   "name": "wfrp4e-loot-sheet",
-  "title": "[WFRP4E] Loot Sheet",
+  "title": "[WFRP4] Loot Sheet",
   "description": "An NPC sheet all players can have access to for party loot",
   "author": "achetzel",
   "system": ["wfrp4e"],

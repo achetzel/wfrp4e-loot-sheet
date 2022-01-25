@@ -27,12 +27,12 @@ class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
     ];
 
     if (game.user.isGM) {
-      templateList.push("modules/wfrp4e-loot-sheet/template/partials/gm-sidebar.html")
+      templateList.push("modules/wfrp4e-loot-sheet/template/partials/gm-sidebar.html");
     }
 
     loadTemplates(templateList);
 
-    if (!game.user.isGM && this.actor.limited) return path + "systems/wfrp4e/templates/actors/limited-sheet.html";
+    if (!game.user.isGM && this.actor.limited) return "systems/wfrp4e/templates/actors/limited-sheet.html";
 
     return "modules/wfrp4e-loot-sheet/template/loot-sheet.html";
 
