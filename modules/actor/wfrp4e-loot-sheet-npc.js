@@ -125,21 +125,21 @@ class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
     }
 
     // calculate the split of coins between all observers of the sheet.
-    let currencySplit = duplicate(Inventory.convertCurrencyFromObject(actorData.data.currency));
-    for (let c in currencySplit) {
-      if (observers.length) {
-        if (currencySplit[c] != null) {
-          currencySplit[c] = Math.floor(currencySplit[c] / observers.length);
-        } else {
-          currencySplit[c] = 0;
-        }
-      }
-    }
+    // let currencySplit = duplicate(Inventory.convertCurrencyFromObject(actorData.data.currency));
+    // for (let c in currencySplit) {
+    //   if (observers.length) {
+    //     if (currencySplit[c] != null) {
+    //       currencySplit[c] = Math.floor(currencySplit[c] / observers.length);
+    //     } else {
+    //       currencySplit[c] = 0;
+    //     }
+    //   }
+    // }
 
     let loot = {}
     loot.players = playerData;
     loot.observerCount = observers.length;
-    loot.currency = currencySplit;
+//    loot.currency = currencySplit;
     loot.permissions = permissionsInfo;
     loot.playersPermission = commonPlayersPermission;
     loot.playersPermissionIcon = Permission.getPermissionInfo(commonPlayersPermission);
