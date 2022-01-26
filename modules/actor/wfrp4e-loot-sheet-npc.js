@@ -8,7 +8,7 @@ class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
     const options = super.defaultOptions;
     mergeObject(options,
       {
-        classes: ["wfrp4e actor npc npc-sheet"],
+        classes: ["wfrp4e sheet actor npc npc-sheet loot-sheet-npc"],
       });
     return options;
   }
