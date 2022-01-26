@@ -1,4 +1,5 @@
-import ActorSheetWfrp4eNPC from "/systems/wfrp4e/modules/actor/sheet/actor-sheet.js";
+import ActorSheetWfrp4eNPC from "/systems/wfrp4e/modules/actor/sheet/npc-sheet.js";
+import { Permission } from "../utility/permission.js";
 
 class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
 
@@ -16,8 +17,6 @@ class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
    * @type {String}
    */
   get template() {
-
-    const sheetType = 'default';
 
     let templateList = [
       "modules/wfrp4e-loot-sheet/template/loot-sheet.html",
@@ -40,6 +39,19 @@ class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
     console.log("Loot Sheet | getData")
 
     const sheetData = await super.getData();
+
+    this._prepareGMSettings(sheetData.actor);
+
+    let itemContents = sheetData.actor.items;
+
+    // Booleans
+    sheetData.isGM = (game.user.isGM) ? true : false;
+
+    // Items
+    sheetData.items = itemContents;
+
+    return sheetData;
+
   }
 
   /* -------------------------------------------- */
@@ -66,6 +78,72 @@ class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
     }
 
     super._onSubmit(e, options);
+  }
+
+  /* -------------------------------------------- */
+  /* -------------------------------------------- */
+
+  /**
+   * Prepares GM settings to be rendered by the loot sheet.
+   * @private
+   * @param {Actor|object} actorData
+   */
+
+  _prepareGMSettings(actorData) {
+    const playerData = [],
+      observers = [],
+      permissionsInfo = Permission.getPermissionInfo();
+    let players = game.users.players,
+      commonPlayersPermission = -1;
+
+    for (let player of players) {
+      // get the name of the primary actor for a player
+      const actor = game.actors.get(player.data.character);
+
+      if (actor) {
+        player.actor = actor.data.name;
+        player.actorId = actor.data._id;
+        player.playerId = player.data._id;
+        player.lootPermission = Permission.getLootPermissionForPlayer(actorData, player);
+
+        if (player.lootPermission >= 2 && !observers.includes(actor.data._id)) {
+          observers.push(actor.data._id);
+        }
+
+        if (commonPlayersPermission < 0) {
+          commonPlayersPermission = player.lootPermission;
+        } else if (commonPlayersPermission !== player.lootPermission) {
+          commonPlayersPermission = 0;
+        }
+
+        const lootPermissionInfo = Permission.getPermissionInfo(player.lootPermission);
+        player.class = lootPermissionInfo.class;
+        player.lootPermissionDescription = lootPermissionInfo.description;
+        playerData.push(player);
+      }
+    }
+
+    // calculate the split of coins between all observers of the sheet.
+    let currencySplit = duplicate(LootSheetNPC5eHelper.convertCurrencyFromObject(actorData.data.currency));
+    for (let c in currencySplit) {
+      if (observers.length) {
+        if (currencySplit[c] != null) {
+          currencySplit[c] = Math.floor(currencySplit[c] / observers.length);
+        } else {
+          currencySplit[c] = 0;
+        }
+      }
+    }
+
+    let loot = {}
+    loot.players = playerData;
+    loot.observerCount = observers.length;
+    loot.currency = currencySplit;
+    loot.permissions = permissionsInfo;
+    loot.playersPermission = commonPlayersPermission;
+    loot.playersPermissionIcon = Permission.getPermissionInfo(commonPlayersPermission);
+    loot.playersPermissionDescription = Permission.getPermissionInfo(commonPlayersPermission)?.description;
+    actorData.flags.loot = loot;
   }
 
 }
