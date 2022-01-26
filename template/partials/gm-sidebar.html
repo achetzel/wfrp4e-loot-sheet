@@ -16,8 +16,8 @@
           <h4 class="sheet-name">Type of sheet: </h4>
         </div>
         <div class="flexcol">
-          <select class="sheet-type" name="data.flags.lootsheetnpc5e.lootsheettype">
-            {{#select data.flags.lootsheetnpc5e.lootsheettype}}
+          <select class="sheet-type" name="data.flags.wfrp4elootsheet.lootsheettype">
+            {{#select data.flags.wfrp4elootsheet.lootsheettype}}
             <option value="Loot">{{localize "lsnpc.sheettypes.loot"}}</option>
             <option value="Merchant">{{localize "lsnpc.sheettypes.merchant"}}</option>
             {{/select}}
@@ -26,7 +26,56 @@
       </div>
     </div>
 
-    {{> "modules/lootsheetnpc5e/template/partials/sidebar/gm-settings/permissions.hbs"}}
+    <div class="ls-gm-section permissions">
+      <h3 class="gm-header">
+        {{localize 'lsnpc.infoboxes.permissions.title'}}
+        <aside class="infobox-wrapper">
+          <i class="fas fa-info-circle help"></i>
+          <div class="sheet-infobox hidden">
+            {{localize lsnpc.infoboxes.permissions.content}}
+          </div>
+        </aside>
+      </h3>
+
+      <h4>{{localize 'Bulk Update'}}</h4>
+      <ul class="permissions-options">
+        {{#each actor.flags.loot.permissions as |permission key|}}
+        <li class="permission-option" >
+          <a data-value="{{key}}" title="{{permission.title}} : {{permission.description}}">
+            <i class="{{permission.class}}"></i>
+          </a>
+        </li>
+        {{/each}}
+      </ul>
+
+      <h4>
+        {{localize 'lsnpc.infoboxes.permissions_individual.title'}}
+        <aside class="infobox-wrapper">
+          <i class="fas fa-info-circle help"></i>
+          <div class="sheet-infobox hidden">
+            {{localize 'lsnpc.infoboxes.permissions_individual.content'}}
+          </div>
+        </aside>
+      </h4>
+      <ol class="permissions-list">
+        {{#each actor.flags.loot.players as |player p|}}
+        <li class="permission" data-skill="{{p}}">
+          <input type="hidden" name="{{player.playerId}}" value="{{player.lootPermission}}" data-dtype="Number"
+                 actor="{{player.actorId}}" />
+          <a class="permission-proficiency"
+             title="{{player.name}} :{{player.lootPermissionDescription}}"
+             data-player-id="{{player.playerId}}"
+             data-player-permission="{{player.lootPermission}}">
+            <i class="{{player.class}}"></i>
+            <img class="permission-player" src="{{player.character.data.img}}" alt="{{player.actor}} ({{player.name}})">
+          </a>
+        </li>
+        {{/each}}
+      </ol>
+    </div>
+    <input type="hidden" name="actor.flags.loot.playersPermission" value="{{actor.flags.loot.playersPermission}}"
+           data-dtype="Number" />
+
 
     <h3 class="gm-header"><i class="fas fa-balance-scale"></i> Inventory Settings
       <aside class="infobox-wrapper">
@@ -57,8 +106,8 @@
           <h4>Rolltable:</h4>
         </div>
         <div class="flexcol">
-          <select class="sheet-rolltable" name="data.flags.lootsheetnpc5e.rolltable">
-            {{#select data.flags.lootsheetnpc5e.rolltable}}
+          <select class="sheet-rolltable" name="data.flags.wfrp4elootsheet.rolltable">
+            {{#select data.flags.wfrp4elootsheet.rolltable}}
             <option value="">None selected</option>
             {{#each rolltables as |array group|}}
             <optgroup label="{{group}}">
@@ -75,22 +124,22 @@
         <div class="flexcol">
           <h4>Rolltable Qty Formula: </h4>
         </div>
-        <div class="flexcol"><input name="data.flags.lootsheetnpc5e.shopQty" type="text" data-dtype="String"
-                                    placeholder="e.g. 1d20" value="{{data.flags.lootsheetnpc5e.shopQty}}" /></div>
+        <div class="flexcol"><input name="data.flags.wfrp4elootsheet.shopQty" type="text" data-dtype="String"
+                                    placeholder="e.g. 1d20" value="{{data.flags.wfrp4elootsheet.shopQty}}" /></div>
       </div>
       <div class="flexrow">
         <div class="flexcol">
           <h4>Item Qty Formula: </h4>
         </div>
-        <div class="flexcol"><input name="data.flags.lootsheetnpc5e.itemQty" type="text" data-dtype="String"
-                                    placeholder="e.g. 1d4" value="{{data.flags.lootsheetnpc5e.itemQty}}" /></div>
+        <div class="flexcol"><input name="data.flags.wfrp4elootsheet.itemQty" type="text" data-dtype="String"
+                                    placeholder="e.g. 1d4" value="{{data.flags.wfrp4elootsheet.itemQty}}" /></div>
       </div>
       <div class="flexrow">
         <div class="flexcol">
           <h4>Limit Qty Formula: </h4>
         </div>
-        <div class="flexcol"><input name="data.flags.lootsheetnpc5e.itemQtyLimit" type="text"
-                                    data-dtype="String" placeholder="e.g. 10" value="{{data.flags.lootsheetnpc5e.itemQtyLimit}}" />
+        <div class="flexcol"><input name="data.flags.wfrp4elootsheet.itemQtyLimit" type="text"
+                                    data-dtype="String" placeholder="e.g. 10" value="{{data.flags.wfrp4elootsheet.itemQtyLimit}}" />
         </div>
       </div>
       <div class="flexrow">
@@ -105,8 +154,8 @@
             </aside>
           </h4>
         </div>
-        <div class="flexcol"><input name="data.flags.lootsheetnpc5e.clearInventory" type="checkbox"
-                                    data-dtype="boolean" {{#if data.flags.lootsheetnpc5e.clearInventory}}checked{{/if}} />
+        <div class="flexcol"><input name="data.flags.wfrp4elootsheet.clearInventory" type="checkbox"
+                                    data-dtype="boolean" {{#if data.flags.wfrp4elootsheet.clearInventory}}checked{{/if}} />
         </div>
       </div>
     </div>
