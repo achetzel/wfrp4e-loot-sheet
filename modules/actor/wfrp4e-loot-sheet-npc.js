@@ -41,7 +41,7 @@ class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
 
     const sheetData = super.getData();
 
-    this._prepareGMSettings(sheetData.actor);
+    //this._prepareGMSettings(sheetData.actor);
 
     let itemContents = sheetData.actor.items;
 
