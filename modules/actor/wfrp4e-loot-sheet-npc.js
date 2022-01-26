@@ -1,5 +1,6 @@
 import ActorSheetWfrp4eNPC from "/systems/wfrp4e/modules/actor/sheet/npc-sheet.js";
 import { Permission } from "../utility/permission.js";
+import {Inventory} from "../utility/inventory";
 
 class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
 
@@ -124,7 +125,7 @@ class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
     }
 
     // calculate the split of coins between all observers of the sheet.
-    let currencySplit = duplicate(LootSheetNPC5eHelper.convertCurrencyFromObject(actorData.data.currency));
+    let currencySplit = duplicate(Inventory.convertCurrencyFromObject(actorData.data.currency));
     for (let c in currencySplit) {
       if (observers.length) {
         if (currencySplit[c] != null) {
