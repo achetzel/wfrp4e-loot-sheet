@@ -21,6 +21,7 @@ class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
 
     let templateList = [
       "modules/wfrp4e-loot-sheet/template/loot-sheet.html",
+      "modules/wfrp4e-loot-sheet/template/partials/header.html",
       "modules/wfrp4e-loot-sheet/template/partials/inventory.html"
     ];
 
