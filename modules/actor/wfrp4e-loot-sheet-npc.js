@@ -1,6 +1,6 @@
 import ActorSheetWfrp4eNPC from "/systems/wfrp4e/modules/actor/sheet/npc-sheet.js";
 import { Permission } from "../utility/permission.js";
-import {Inventory} from "../utility/inventory";
+import { Inventory } from "../utility/inventory.js";
 
 class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
 
@@ -37,7 +37,7 @@ class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
   }
 
   async getData() {
-    console.log("Loot Sheet | getData")
+    console.log("Loot Sheet | getData");
 
     const sheetData = await super.getData();
 

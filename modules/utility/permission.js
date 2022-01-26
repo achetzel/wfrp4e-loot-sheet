@@ -34,7 +34,7 @@ class Permission {
    * by reading the dataset value of a permission option
    *
    * @param {event} event
-   * @param {Actor5e} actor
+   * @param {Wfrp4eActor} actor
    *
    * @uses  {Array<User>} users The games users
    **/
@@ -59,7 +59,6 @@ class Permission {
   }
 
   /**
-   * @title PermissionHelper.cyclePermissions
    * @description Update the permissions of an player on the given actor
    *
    * @param {ActorData} actor A token actor sheets actorData
