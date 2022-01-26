@@ -6,9 +6,7 @@ class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
     const options = super.defaultOptions;
     mergeObject(options,
       {
-        classes: options.classes.concat(["wfrp4e", "actor", "actor-sheet"]),
-        width: 610,
-        height: 740,
+        classes: ["wfrp4e actor npc npc-sheet"],
       });
     return options;
   }
@@ -38,4 +36,38 @@ class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
 
   }
 
+  async getData() {
+    console.log("Loot Sheet | getData")
+
+    const sheetData = await super.getData();
+  }
+
+  /* -------------------------------------------- */
+  /*  Event Listeners and Handlers
+  /* -------------------------------------------- */
+
+  /**
+   * Activate event listeners using the prepared sheet HTML
+   * @param html {HTML}   The prepared HTML object ready to be rendered into the DOM
+   */
+  async activateListeners(html) {
+    console.log("Loot Sheet | activateListeners")
+    super.activateListeners(html);
+  }
+
+  async _onSubmit(e) {
+    e.preventDefault();
+    let options = {},
+      inventorySettings = document.querySelector('.inventory-settings');
+
+    if (game.user.isGM && inventorySettings && inventorySettings.contains(e.currentTarget)) {
+      options.preventClose = true;
+      options.preventRender = true;
+    }
+
+    super._onSubmit(e, options);
+  }
+
 }
+
+export { Wfrp4eLootSheetNpc };
