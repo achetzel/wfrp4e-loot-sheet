@@ -39,7 +39,7 @@ class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
   async getData() {
     console.log("Loot Sheet | getData");
 
-    const sheetData = await super.getData();
+    const sheetData = super.getData();
 
     this._prepareGMSettings(sheetData.actor);
 
@@ -136,7 +136,7 @@ class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
     //   }
     // }
 
-    let loot = {}
+    let loot = {};
     loot.players = playerData;
     loot.observerCount = observers.length;
 //    loot.currency = currencySplit;
