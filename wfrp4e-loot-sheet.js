@@ -1,4 +1,4 @@
-import { Wfrp4eLootSheetNpc } from './modules/actor/wfrp4e-loot-sheet-npc.js';
+import { Wfrp4eLootSheetNpc } from './modules/actor/wfrp4e-lootsheetnpc.js';
 import { Wfrp4eLootSheetHooks } from './modules/hooks/wfrp4e-loot-sheet-hooks.js';
 
 //Register the loot sheet
