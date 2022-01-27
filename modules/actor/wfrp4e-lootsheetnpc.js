@@ -22,7 +22,8 @@ class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
     let templateList = [
       "modules/wfrp4e-loot-sheet/template/loot-sheet.html",
       "modules/wfrp4e-loot-sheet/template/partials/header.html",
-      "modules/wfrp4e-loot-sheet/template/partials/inventory.html"
+      "modules/wfrp4e-loot-sheet/template/partials/inventory.html",
+      "modules/wfrp4e-loot-sheet/template/partials/notes.html"
     ];
 
     if (game.user.isGM) {
@@ -38,22 +39,138 @@ class Wfrp4eLootSheetNpc extends ActorSheetWfrp4eNPC {
   }
 
   async getData() {
-    console.log("Loot Sheet | getData");
+
+    console.log("Loot Sheet | Get Data");
 
     const sheetData = super.getData();
+    sheetData.data = sheetData.data.data // project system data so that handlebars has the same name and value paths
 
-    //this._prepareGMSettings(sheetData.actor);
+    let items = {};
+    items.inventory = this.constructInventory(sheetData);
 
-    let itemContents = sheetData.actor.items;
+    sheetData.items = items;
 
-    // Booleans
-    sheetData.isGM = (game.user.isGM) ? true : false;
-
-    // Items
-    sheetData.items = itemContents;
+    console.log(sheetData);
 
     return sheetData;
+  }
 
+  constructInventory(sheetData) {
+    // Inventory object is for the Trappings tab - each sub object is for an individual inventory section
+    const categories = {
+      weapons: {
+        label: game.i18n.localize("WFRP4E.TrappingType.Weapon"),  // Label - what is displayed in the inventory section header
+        items: sheetData.actor.getItemTypes("weapon"),            // Array of items in the sectio.filter(i => !i.location.value)n
+      //  toggle: true,                                             // Is there a toggle in the section? (Equipped, worn, etc.)
+      //  toggleName: game.i18n.localize("Equipped"),               // What is the name of the toggle in the header
+        show: false,                                              // Should this section be shown (if an item exists in this list, it is set to true)
+        dataType: "weapon"                                        // What type of FVTT Item is in this section (used by the + button to add an item of this type)
+      },
+      armor: {
+        label: game.i18n.localize("WFRP4E.TrappingType.Armour"),
+        items: sheetData.actor.getItemTypes("armour"),
+      //  toggle: true,
+      //  toggleName: game.i18n.localize("Worn"),
+        show: false,
+        dataType: "armour"
+      },
+      ammunition: {
+        label: game.i18n.localize("WFRP4E.TrappingType.Ammunition"),
+        items: sheetData.actor.getItemTypes("ammunition"),
+        show: false,
+        dataType: "ammunition"
+      },
+      clothingAccessories: {
+        label: game.i18n.localize("WFRP4E.TrappingType.ClothingAccessories"),
+        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "clothingAccessories"),
+      //  toggle: true,
+      //  toggleName: game.i18n.localize("Worn"),
+        show: false,
+        dataType: "trapping"
+      },
+      booksAndDocuments: {
+        label: game.i18n.localize("WFRP4E.TrappingType.BooksDocuments"),
+        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "booksAndDocuments"),
+        show: false,
+        dataType: "trapping"
+      },
+      toolsAndKits: {
+        label: game.i18n.localize("WFRP4E.TrappingType.ToolsKits"),
+        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "toolsAndKits" || i.trappingType.value == "tradeTools"),
+        show: false,
+        dataType: "trapping"
+      },
+      foodAndDrink: {
+        label: game.i18n.localize("WFRP4E.TrappingType.FoodDrink"),
+        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "foodAndDrink"),
+        show: false,
+        dataType: "trapping"
+      },
+      drugsPoisonsHerbsDraughts: {
+        label: game.i18n.localize("WFRP4E.TrappingType.DrugsPoisonsHerbsDraughts"),
+        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "drugsPoisonsHerbsDraughts"),
+        show: false,
+        dataType: "trapping"
+      },
+      misc: {
+        label: game.i18n.localize("WFRP4E.TrappingType.Misc"),
+        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "misc" || !i.trappingType.value),
+        show: true,
+        dataType: "trapping"
+      },
+      cargo: {
+        label: game.i18n.localize("WFRP4E.TrappingType.Cargo"),
+        items: sheetData.actor.getItemTypes("cargo"),
+        show: false,
+        dataType: "cargo"
+      }
+    }
+
+    // Money and ingredients are not in inventory object because they need more customization - note in actor-inventory.html that they do not exist in the main inventory loop
+    const ingredients = {
+      label: game.i18n.localize("WFRP4E.TrappingType.Ingredient"),
+      items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "ingredient"),
+      show: false,
+      dataType: "trapping"
+    }
+    const money = {
+      items: sheetData.actor.getItemTypes("money"),
+      total: 0,     // Total coinage value
+      show: true
+    }
+    const containers = {
+      items: sheetData.actor.getItemTypes("container"),
+      show: false
+    }
+
+    const misc = {}
+    let inContainers = []; // inContainers is the temporary storage for items within a container
+    for (let itemCategory in categories) {
+      inContainers = this._filterItemCategory(categories[itemCategory], inContainers);
+    }
+
+    categories.misc.items = categories.misc.items.concat(ingredients.items)
+
+    misc.totalShieldDamage = categories["weapons"].items.reduce((prev, current) => prev += current.damageToItem.shield, 0)
+
+    money.total = money.items.reduce((prev, current) => { return prev + (current.coinValue.value * current.quantity.value) }, 0)
+
+    categories.misc.show = true
+
+    return {
+      categories,
+      ingredients,
+      money,
+      containers,
+      misc
+    }
+  }
+
+  _filterItemCategory(category, itemsInContainers) {
+    itemsInContainers = itemsInContainers.concat(category.items.filter(i => !!i.location?.value))
+    category.items = category.items.filter(i => !i.location?.value)
+    category.show = category.items.length > 0
+    return itemsInContainers
   }
 
   /* -------------------------------------------- */
